@@ -2,6 +2,7 @@ package br.com.caelum.eats.controller;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.caelum.eats.dto.PagamentoDto;
+import br.com.caelum.eats.dto.PedidoDto;
+import br.com.caelum.eats.exception.ResourceNotFoundException;
 import br.com.caelum.eats.model.Pagamento;
 import br.com.caelum.eats.model.Pedido;
 import br.com.caelum.eats.repository.PagamentoRepository;
@@ -32,19 +35,22 @@ public class PagamentoController {
 	}
 
 	@PutMapping("/{id}")
-	public PagamentoDto confirma(@RequestBody Pagamento pagamento) {
+	public PagamentoDto confirma(@PathVariable Long id) {
+		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		pagamento.setStatus(Pagamento.Status.CONFIRMADO);
 		pagamentoRepo.save(pagamento);
-		Pedido pedido = pagamento.getPedido();
+		Long pedidoId = pagamento.getPedido().getId();
+		Pedido pedido = pedidoRepo.porIdComItens(pedidoId);
 		pedido.setStatus(Pedido.Status.PAGO);
 		pedidoRepo.atualizaStatus(Pedido.Status.PAGO, pedido);
 		websocket.convertAndSend("/parceiros/restaurantes/" + pedido.getRestaurante().getId() + "/pedidos/pendentes",
-				pedido);
+				new PedidoDto(pedido));
 		return new PagamentoDto(pagamento);
 	}
 
 	@DeleteMapping("/{id}")
-	public PagamentoDto cancela(@RequestBody Pagamento pagamento) {
+	public PagamentoDto cancela(@PathVariable Long id) {
+		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		pagamento.setStatus(Pagamento.Status.CANCELADO);
 		pagamentoRepo.save(pagamento);
 		return new PagamentoDto(pagamento);
