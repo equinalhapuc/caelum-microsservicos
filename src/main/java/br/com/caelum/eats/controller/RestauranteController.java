@@ -58,6 +58,12 @@ public class RestauranteController {
 			@PathVariable("restauranteId") Long restauranteId) {
 		return distanciaService.restauranteComDistanciaDoCep(restauranteId, cep);
 	}
+	
+	@GetMapping("/parceiros/restaurantes/do-usuario/{username}")
+	public RestauranteDto detalhaParceiro(@PathVariable("username") String username) {
+		Restaurante restaurante = restauranteRepo.findByUsername(username);
+		return new RestauranteDto(restaurante);
+	}
 
 	@GetMapping("/parceiros/restaurantes/{id}")
 	public RestauranteDto detalhaParceiro(@PathVariable("id") Long id) {

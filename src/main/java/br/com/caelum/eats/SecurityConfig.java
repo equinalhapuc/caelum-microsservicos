@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import br.com.caelum.eats.model.Role;
@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserService userService;
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -37,7 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/actuator/**").permitAll()
 				.antMatchers("/admin/**").hasRole(Role.ROLES.ADMIN.name())
 				.antMatchers(HttpMethod.POST, "/parceiros/restaurantes").permitAll()
-				.antMatchers("/parceiros/restaurantes/{restauranteId}/**").access("@authorizationService.checaTargetId(authentication,#restauranteId)")
 				.antMatchers("/parceiros/**").hasRole(Role.ROLES.PARCEIRO.name())
 				.anyRequest().authenticated()
 				.and().cors()
@@ -45,13 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.formLogin().disable()
 				.httpBasic().disable()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-				.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+				.addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+				.exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint);
 	}
 
 	@Override
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+		auth.userDetailsService(this.userService).passwordEncoder(this.passwordEncoder);
 	}
 
 	@Override
@@ -59,5 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
+	
+
 
 }

@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.caelum.eats.dto.AuthenticationDto;
 import br.com.caelum.eats.dto.UserInfoDto;
-import br.com.caelum.eats.model.Restaurante;
 import br.com.caelum.eats.model.Role;
 import br.com.caelum.eats.model.User;
-import br.com.caelum.eats.repository.RestauranteRepository;
 import br.com.caelum.eats.service.JwtTokenManager;
 import br.com.caelum.eats.service.UserService;
 import lombok.AllArgsConstructor;
@@ -29,7 +27,6 @@ public class AuthenticationController {
 	private AuthenticationManager authManager;
 	private JwtTokenManager jwtTokenManager;
 	private UserService userService;
-	private RestauranteRepository restauranteRepo;
 
 	@PostMapping
 	public ResponseEntity<AuthenticationDto> authenticate(@RequestBody UserInfoDto login) {
@@ -40,8 +37,7 @@ public class AuthenticationController {
 			Authentication authentication = authManager.authenticate(authenticationToken);
 			User user = (User) authentication.getPrincipal();
 			String jwt = jwtTokenManager.generateToken(user);
-			Long targetId = getTargetIdFor(user);
-			AuthenticationDto tokenResponse = new AuthenticationDto(user, jwt, targetId);
+			AuthenticationDto tokenResponse = new AuthenticationDto(user, jwt);
 			return ResponseEntity.ok(tokenResponse);
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
@@ -55,16 +51,6 @@ public class AuthenticationController {
 		user.addRole(Role.ROLES.PARCEIRO);
 		User salvo = userService.save(user);
 		return salvo.getId();
-	}
-
-	private Long getTargetIdFor(User user) {
-		if(user.isInRole(Role.ROLES.PARCEIRO)) {
-			Restaurante restaurante = restauranteRepo.findByUser(user);
-			if (restaurante != null) {
-				return restaurante.getId();
-			}
-		}
-		return null;
 	}
 
 }
