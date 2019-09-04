@@ -3,7 +3,6 @@ package br.com.caelum.eats.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.caelum.eats.dto.PagamentoDto;
-import br.com.caelum.eats.dto.PedidoDto;
 import br.com.caelum.eats.exception.ResourceNotFoundException;
 import br.com.caelum.eats.model.Pagamento;
 import br.com.caelum.eats.model.Pedido;
@@ -30,7 +28,6 @@ public class PagamentoController {
 
 	private PagamentoRepository pagamentoRepo;
 	private PedidoRepository pedidoRepo;
-	private SimpMessagingTemplate websocket;
 
 	@GetMapping("/{id}")
 	public PagamentoDto detalha(@PathVariable Long id) {
@@ -55,8 +52,6 @@ public class PagamentoController {
 		Pedido pedido = pedidoRepo.porIdComItens(pedidoId);
 		pedido.setStatus(Pedido.Status.PAGO);
 		pedidoRepo.atualizaStatus(Pedido.Status.PAGO, pedido);
-		websocket.convertAndSend("/parceiros/restaurantes/" + pedido.getRestaurante().getId() + "/pedidos/pendentes",
-				new PedidoDto(pedido));
 		return new PagamentoDto(pagamento);
 	}
 

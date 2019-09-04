@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,6 @@ import lombok.AllArgsConstructor;
 public class PedidoController {
 
 	private PedidoRepository repo;
-	private SimpMessagingTemplate websocket;
 
 	@GetMapping("/pedidos")
 	public List<PedidoDto> lista() {
@@ -52,7 +50,6 @@ public class PedidoController {
 	@PutMapping("/pedidos/{id}/status")
 	public PedidoDto atualizaStatus(@RequestBody Pedido pedido) {
 		repo.atualizaStatus(pedido.getStatus(), pedido);
-		websocket.convertAndSend("/pedidos/"+pedido.getId()+"/status", pedido);
 		return new PedidoDto(pedido);
 	}
 
