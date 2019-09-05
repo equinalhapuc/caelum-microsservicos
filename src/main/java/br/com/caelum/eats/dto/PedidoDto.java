@@ -11,8 +11,10 @@ import br.com.caelum.eats.model.Pedido;
 import br.com.caelum.eats.model.Restaurante;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class PedidoDto {
 

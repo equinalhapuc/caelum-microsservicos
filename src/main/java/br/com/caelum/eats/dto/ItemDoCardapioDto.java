@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 import br.com.caelum.eats.model.ItemDoCardapio;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class ItemDoCardapioDto {
 

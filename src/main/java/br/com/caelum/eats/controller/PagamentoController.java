@@ -30,7 +30,7 @@ public class PagamentoController {
 	private PedidoRepository pedidoRepo;
 
 	@GetMapping("/{id}")
-	public PagamentoDto detalha(@PathVariable Long id) {
+	public PagamentoDto detalha(@PathVariable("id") Long id) {
 		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		return new PagamentoDto(pagamento);
 	}
@@ -44,7 +44,7 @@ public class PagamentoController {
 	}
 
 	@PutMapping("/{id}")
-	public PagamentoDto confirma(@PathVariable Long id) {
+	public PagamentoDto confirma(@PathVariable("id") Long id) {
 		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		pagamento.setStatus(Pagamento.Status.CONFIRMADO);
 		pagamentoRepo.save(pagamento);
@@ -56,7 +56,7 @@ public class PagamentoController {
 	}
 
 	@DeleteMapping("/{id}")
-	public PagamentoDto cancela(@PathVariable Long id) {
+	public PagamentoDto cancela(@PathVariable("id") Long id) {
 		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		pagamento.setStatus(Pagamento.Status.CANCELADO);
 		pagamentoRepo.save(pagamento);

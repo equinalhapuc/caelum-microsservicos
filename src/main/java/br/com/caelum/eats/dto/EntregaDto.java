@@ -4,8 +4,10 @@ import br.com.caelum.eats.model.Cliente;
 import br.com.caelum.eats.model.Entrega;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class EntregaDto {
 

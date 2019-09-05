@@ -39,7 +39,7 @@ public class AvaliacaoController {
 	}
 
 	@GetMapping("/restaurantes/media-avaliacoes")
-	public List<MediaAvaliacoesDto> mediaDasAvaliacoesDosRestaurantes(@RequestParam List<Long> idsDosRestaurantes) {
+	public List<MediaAvaliacoesDto> mediaDasAvaliacoesDosRestaurantes(@RequestParam("idsDosRestaurantes") List<Long> idsDosRestaurantes) {
 		List<MediaAvaliacoesDto> medias = new ArrayList<>();
 		for(Long restauranteId : idsDosRestaurantes) {
 			Double media = repo.mediaDoRestaurantePeloId(restauranteId);

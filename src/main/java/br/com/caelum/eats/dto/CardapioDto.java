@@ -8,9 +8,11 @@ import br.com.caelum.eats.model.Cardapio;
 import br.com.caelum.eats.model.CategoriaDoCardapio;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CardapioDto {
 
 	private Long id;

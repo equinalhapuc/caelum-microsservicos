@@ -6,8 +6,10 @@ import br.com.caelum.eats.model.FormaDePagamento;
 import br.com.caelum.eats.model.Pagamento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class PagamentoDto {
 
