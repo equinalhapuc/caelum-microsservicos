@@ -2,6 +2,8 @@ package br.com.caelum.eats.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.caelum.eats.dto.FormaDePagamentoDto;
 import br.com.caelum.eats.model.FormaDePagamento;
 import br.com.caelum.eats.model.Restaurante;
 import br.com.caelum.eats.model.RestauranteFormaDePagamento;
@@ -27,8 +30,8 @@ public class FormaDePagamentoController {
 	private RestauranteFormaDePagamentoRepository restauranteFormaDePagamentoRepo;
 
 	@GetMapping("/formas-de-pagamento")
-	public List<FormaDePagamento> lista() {
-		return formaRepo.findAllByOrderByNomeAsc();
+	public List<FormaDePagamentoDto> lista() {
+		return formaRepo.findAllByOrderByNomeAsc().stream().map(FormaDePagamentoDto::new).collect(Collectors.toList());
 	}
 
 	@GetMapping("/admin/formas-de-pagamento/tipos")
@@ -37,13 +40,13 @@ public class FormaDePagamentoController {
 	}
 
 	@PostMapping("/admin/formas-de-pagamento")
-	public FormaDePagamento adiciona(@RequestBody FormaDePagamento tipoDeCozinha) {
-		return formaRepo.save(tipoDeCozinha);
+	public FormaDePagamentoDto adiciona(@RequestBody FormaDePagamento tipoDeCozinha) {
+		return new FormaDePagamentoDto(formaRepo.save(tipoDeCozinha));
 	}
 
 	@PutMapping("/admin/formas-de-pagamento/{id}")
-	public FormaDePagamento atualiza(@RequestBody FormaDePagamento tipoDeCozinha) {
-		return formaRepo.save(tipoDeCozinha);
+	public FormaDePagamentoDto atualiza(@RequestBody FormaDePagamento tipoDeCozinha) {
+		return  new FormaDePagamentoDto(formaRepo.save(tipoDeCozinha));
 	}
 
 	@DeleteMapping("/admin/formas-de-pagamento/{id}")
@@ -52,12 +55,12 @@ public class FormaDePagamentoController {
 	}
 
 	@GetMapping("/restaurantes/{idRestaurante}/formas-de-pagamento")
-	public List<FormaDePagamento> lista(@PathVariable("idRestaurante") Long idRestaurante) {
+	public List<FormaDePagamentoDto> lista(@PathVariable("idRestaurante") Long idRestaurante) {
 		Restaurante restaurante = new Restaurante();
 		restaurante.setId(idRestaurante);
 		List<FormaDePagamento> formasDePagamentoDoRestaurante = restauranteFormaDePagamentoRepo
 				.findAllByRestauranteOrderByNomeAsc(restaurante);
-		return formasDePagamentoDoRestaurante;
+		return formasDePagamentoDoRestaurante.stream().map(FormaDePagamentoDto::new).collect(Collectors.toList());
 	}
 
 	@PostMapping("/parceiros/restaurantes/{idRestaurante}/formas-de-pagamento")

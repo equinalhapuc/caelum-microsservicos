@@ -1,6 +1,7 @@
 package br.com.caelum.eats.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.caelum.eats.model.TipoDeCozinha;
+import br.com.caelum.eats.dto.TipoDeCozinhaDto;
 import br.com.caelum.eats.repository.TipoDeCozinhaRepository;
 import lombok.AllArgsConstructor;
 
@@ -21,18 +22,18 @@ public class TipoDeCozinhaController {
 	private TipoDeCozinhaRepository repo;
 
 	@GetMapping("/tipos-de-cozinha")
-	public List<TipoDeCozinha> lista() {
-		return repo.findAllByOrderByNomeAsc();
+	public List<TipoDeCozinhaDto> lista() {
+		return repo.findAllByOrderByNomeAsc().stream().map(TipoDeCozinhaDto::new).collect(Collectors.toList());
 	}
 
 	@PostMapping("/admin/tipos-de-cozinha")
-	public TipoDeCozinha adiciona(@RequestBody TipoDeCozinha tipoDeCozinha) {
-		return repo.save(tipoDeCozinha);
+	public TipoDeCozinhaDto adiciona(@RequestBody TipoDeCozinhaDto tipoDeCozinhaDto) {
+		return new TipoDeCozinhaDto(repo.save(tipoDeCozinhaDto.toTipoDeCozinha()));
 	}
 
 	@PutMapping("/admin/tipos-de-cozinha/{id}")
-	public TipoDeCozinha atualiza(@RequestBody TipoDeCozinha tipoDeCozinha) {
-		return repo.save(tipoDeCozinha);
+	public TipoDeCozinhaDto atualiza(@RequestBody TipoDeCozinhaDto tipoDeCozinhaDto) {
+		return new TipoDeCozinhaDto(repo.save(tipoDeCozinhaDto.toTipoDeCozinha()));
 	}
 
 	@DeleteMapping("/admin/tipos-de-cozinha/{id}")

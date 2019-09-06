@@ -39,13 +39,13 @@ public class HorarioDeFuncionamentoController {
 	}
 
 	@PostMapping("/parceiros/restaurantes/{idRestaurante}/horarios-de-funcionamento")
-	public HorarioDeFuncionamento adiciona(@RequestBody HorarioDeFuncionamento horarioDeFuncionamento) {
-		return repo.save(horarioDeFuncionamento);
+	public HorarioDeFuncionamentoDto adiciona(@RequestBody HorarioDeFuncionamento horarioDeFuncionamento) {
+		return new HorarioDeFuncionamentoDto(repo.save(horarioDeFuncionamento));
 	}
 
 	@PutMapping("/parceiros/restaurantes/{idRestaurante}/horarios-de-funcionamento/{id}")
-	public HorarioDeFuncionamento atualiza(@RequestBody HorarioDeFuncionamento horarioDeFuncionamento) {
-		return repo.save(horarioDeFuncionamento);
+	public HorarioDeFuncionamentoDto atualiza(@RequestBody HorarioDeFuncionamento horarioDeFuncionamento) {
+		return  new HorarioDeFuncionamentoDto(repo.save(horarioDeFuncionamento));
 	}
 
 	@DeleteMapping("/parceiros/restaurantes/{idRestaurante}/horarios-de-funcionamento/{id}")
