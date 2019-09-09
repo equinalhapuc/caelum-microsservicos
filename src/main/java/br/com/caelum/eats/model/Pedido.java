@@ -53,6 +53,4 @@ public class Pedido {
 	@OneToMany(cascade=CascadeType.PERSIST, mappedBy="pedido")
 	private List<ItemDoPedido> itens = new ArrayList<>();
 
-//	private Usuario usuario;
-
 }
