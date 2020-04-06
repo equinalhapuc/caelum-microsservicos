@@ -58,7 +58,7 @@ public class RestauranteController {
 			@PathVariable("restauranteId") Long restauranteId) {
 		return distanciaService.restauranteComDistanciaDoCep(restauranteId, cep);
 	}
-	
+
 	@GetMapping("/parceiros/restaurantes/do-usuario/{username}")
 	public RestauranteDto detalhaParceiro(@PathVariable("username") String username) {
 		Restaurante restaurante = restauranteRepo.findByUsername(username);
@@ -81,13 +81,12 @@ public class RestauranteController {
 		return new RestauranteDto(restauranteSalvo);
 	}
 
-	@PutMapping("/parceiros/restaurantes/{id}")
-	public RestauranteDto atualiza(@RequestBody Restaurante restaurante) {
-		Restaurante doBD = restauranteRepo.getOne(restaurante.getId());
-		restaurante.setUser(doBD.getUser());
-		restaurante.setAprovado(doBD.getAprovado());
-		return new RestauranteDto(restauranteRepo.save(restaurante));
-	}
+  @PutMapping("/parceiros/restaurantes/{id}")
+  public RestauranteDto atualiza(@RequestBody RestauranteDto restaurante) {
+    Restaurante doBD = restauranteRepo.getOne(restaurante.getId());
+    restaurante.populaRestaurante(doBD);
+    return new RestauranteDto(restauranteRepo.save(doBD));
+  }
 
 	@GetMapping("/admin/restaurantes/em-aprovacao")
 	public List<RestauranteDto> emAprovacao() {
